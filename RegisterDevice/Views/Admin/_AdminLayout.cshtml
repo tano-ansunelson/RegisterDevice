@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-dark px-3">
+        <span class="navbar-brand">Device Registry – Admin</span>
+        <a asp-action="Logout" class="btn btn-sm btn-danger">Logout</a>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <aside class="col-md-2 bg-white border-end min-vh-100 p-3">
+                <a asp-action="Dashboard" class="d-block mb-2">Dashboard</a>
+                <a asp-action="LostDevices" class="d-block mb-2">Lost Devices</a>
+                <a asp-action="RegisteredDevices" class="d-block mb-2">Devices</a>
+                <a asp-action="RegisteredAccounts" class="d-block mb-2">Users</a>
+            </aside>
+
+            <main class="col-md-10 p-4">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+</body>
+</html>

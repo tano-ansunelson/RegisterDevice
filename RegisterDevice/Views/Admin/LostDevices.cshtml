@@ -1,0 +1,28 @@
+﻿@model List<LostDeviceReport>
+@{
+    Layout = "_AdminLayout";
+}
+
+<h3>Lost Devices</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Brand</th>
+            <th>Model</th>
+            <th>Identifier</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Brand</td>
+                <td>@r.Model</td>
+                <td>@r.Identifier.Substring(0, 6)*****</td>
+                <td>@(r.IsResolved ? "Found" : "Lost")</td>
+            </tr>
+        }
+    </tbody>
+</table>

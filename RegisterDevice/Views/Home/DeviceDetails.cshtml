@@ -1,0 +1,524 @@
+﻿@model RegisterDevice.Models.RegisteredDevice
+@{
+    ViewData["Title"] = "Device Details";
+}
+<style>
+    .thumbnail:hover {
+        border: 2px solid #0d6efd;
+    }
+</style>
+
+<div class="container py-4">
+
+    <!-- Breadcrumb / Back Button -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-action="Index" class="text-decoration-none">
+                    <i class="bi bi-house-door"></i> My Devices
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Device Details</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-info-circle-fill text-primary me-2"></i>
+                Device Details
+            </h2>
+            <p class="text-muted mb-0">Complete information about your registered device</p>
+        </div>
+        <a asp-action="EditDevice" asp-route-id="@Model.Id" class="btn btn-primary">
+            <i class="bi bi-pencil me-2"></i>Edit Device
+        </a>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Device Images -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-images me-2"></i>Device Images
+                    </h5>
+                </div>
+                <div class="card-body">
+
+                    @if (Model.DeviceImages != null && Model.DeviceImages.Any())
+                    {
+                        <!-- Main image (first image) -->
+                        <div class="position-relative mb-3">
+                            <img id="mainImage"
+                                 src="@Model.DeviceImages.First().ImagePath"
+                                 class="img-fluid rounded border"
+                                 style="width: 100%; height: 400px; object-fit: cover;"
+                                 alt="Device image">
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="badge bg-dark bg-opacity-75">
+                                    <i class="bi bi-zoom-in me-1"></i>Click thumbnails to view
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Thumbnails -->
+                        <div class="d-flex gap-2 flex-wrap justify-content-center">
+                            @foreach (var image in Model.DeviceImages)
+                            {
+                                <img src="@image.ImagePath"
+                                     class="img-thumbnail thumbnail border-2"
+                                     width="80"
+                                     height="80"
+                                     style="cursor:pointer; object-fit: cover;"
+                                     onclick="changeImage('@image.ImagePath')"
+                                     alt="Device thumbnail">
+                            }
+                        </div>
+
+                    }
+                    else
+                    {
+                        <!-- Fallback -->
+                        <div class="text-center py-5">
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
+                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                            <p class="text-muted">No images available</p>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+            <!-- Status Card -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">
+                        <i class="bi bi-shield-check me-2"></i>Device Status
+                    </h6>
+
+                    @if (Model.Status == "Active")
+                    {
+                        <div class="d-flex align-items-center justify-content-between p-3 bg-success bg-opacity-10 rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-check-circle-fill text-white"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-success">Active</h6>
+                                    <small class="text-muted">Device is registered and safe</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else if (Model.Status == "Lost")
+                    {
+                        <div class="d-flex align-items-center justify-content-between p-3 bg-danger bg-opacity-10 rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-danger rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-exclamation-triangle-fill text-white"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-danger">Lost / Stolen</h6>
+                                    <small class="text-muted">Publicly searchable</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Device Info -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                            <i class="bi @(Model.DeviceType == "Phone" ? "bi-phone-fill" : "bi-laptop-fill") text-primary fs-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-0 fw-bold">@Model.Model</h3>
+                            <p class="text-muted mb-0">@Model.Brand · @Model.DeviceType</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+
+                    <!-- Device Specifications -->
+                    <h6 class="fw-bold mb-3 mt-2">
+                        <i class="bi bi-list-ul me-2"></i>Device Specifications
+                    </h6>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="bi bi-hash me-1"></i>IMEI / Serial Number
+                                </small>
+                                <code class="fs-6 fw-bold">@Model.Identifier</code>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="bi bi-calendar-check me-1"></i>Registered On
+                                </small>
+                                <span class="fw-semibold">@Model.RegisteredAt.ToString("MMM dd, yyyy")</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="bi bi-building me-1"></i>Brand
+                                </small>
+                                <span class="fw-semibold">@Model.Brand</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="bi bi-phone me-1"></i>Model
+                                </small>
+                                <span class="fw-semibold">@Model.Model</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Owner Information -->
+                    <h6 class="fw-bold mb-3">
+                        <i class="bi bi-person-circle me-2"></i>Owner Information
+                    </h6>
+
+                    <div class="d-flex align-items-center p-3 bg-light rounded mb-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                            <span class="text-primary fw-bold fs-5">@Model.User?.FullName?.Substring(0, 1).ToUpper()</span>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-semibold">@Model.User?.FullName</h6>
+                            <small class="text-muted">@Model.User?.Email</small>
+                        </div>
+                    </div>
+
+                    <!-- Additional Notes -->
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <hr>
+                        <h6 class="fw-bold mb-3">
+                            <i class="bi bi-journal-text me-2"></i>Additional Notes
+                        </h6>
+                        <div class="p-3 bg-light rounded">
+                            <p class="mb-0">@Model.Notes</p>
+                        </div>
+                    }
+
+                    <hr>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a asp-action="EditDevice"
+                           asp-route-id="@Model.Id"
+                           class="btn btn-primary">
+                            <i class="bi bi-pencil me-2"></i>Edit Device
+                        </a>
+
+                        @if (Model.Status == "Active")
+                        {
+                            <button type="button"
+                                    class="btn btn-outline-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#markLostModal">
+                                <i class="bi bi-exclamation-triangle me-2"></i>Mark as Lost
+                            </button>
+                        }
+                        else if (Model.Status == "Lost")
+                        {
+                            <button type="button"
+                                    class="btn btn-outline-success"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#markFoundModal">
+                                <i class="bi bi-check-circle me-2"></i>Mark as Found
+                            </button>
+                        }
+
+                        <a asp-action="Index" class="btn btn-outline-secondary ms-auto">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Devices
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Security Notice -->
+            <div class="alert alert-info border-0 shadow-sm mt-4">
+                <div class="d-flex align-items-start">
+                    <div class="bg-info bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width: 40px; height: 40px;">
+                        <i class="bi bi-shield-check text-info"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Device Protected</h6>
+                        <p class="mb-0 small">This device is registered in our system. If marked as lost, it will be publicly searchable to help with recovery.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal to mark device as Lost -->
+<div class="modal fade" id="markLostModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                    Mark Device as Lost
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center py-4">
+                <div class="bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                    <i class="bi bi-exclamation-triangle-fill text-danger fs-1"></i>
+                </div>
+                <p class="mb-2">
+                    Are you sure you want to mark <strong>@Model.Model</strong> as <strong class="text-danger">LOST</strong>?
+                </p>
+                <small class="text-muted">
+                    This will make the device publicly searchable and visible to others.
+                </small>
+            </div>
+
+            <div class="modal-footer border-0 justify-content-center pb-4">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i>Cancel
+                </button>
+
+                <form asp-action="MarkLost" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-exclamation-triangle me-1"></i>Yes, Mark as Lost
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal to mark device as Found -->
+<div class="modal fade" id="markFoundModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    Mark Device as Found
+                </h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center py-4">
+                <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                    <i class="bi bi-check-circle-fill text-success fs-1"></i>
+                </div>
+                <p class="mb-2">
+                    Has <strong>@Model.Model</strong> been <strong class="text-success">FOUND</strong>?
+                </p>
+                <small class="text-muted">
+                    This will remove it from public lost searches and mark it as active.
+                </small>
+            </div>
+
+            <div class="modal-footer border-0 justify-content-center pb-4">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i>Cancel
+                </button>
+
+                <form asp-action="MarkFound" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit"
+                            class="btn btn-success">
+                        <i class="bi bi-check-circle me-1"></i>Yes, Mark as Found
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function changeImage(src) {
+        const mainImage = document.getElementById("mainImage");
+        mainImage.src = src;
+
+        // Add a subtle fade effect
+        mainImage.style.opacity = '0.5';
+        setTimeout(() => {
+            mainImage.style.opacity = '1';
+        }, 100);
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
+
+@model RegisterDevice.Models.RegisteredDevice
+@{
+    ViewData["Title"] = "Device Details";
+}
+<style>
+    .thumbnail:hover {
+        border: 2px solid #0d6efd;
+    }
+</style>
+
+<div class="container py-4">
+
+    <a asp-action="Index" class="btn btn-link mb-3">
+        ← Back to My Devices
+    </a>
+
+    <div class="row g-4">
+
+        <!-- Device Images -->
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    @if (Model.DeviceImages != null && Model.DeviceImages.Any())
+                    {
+                        <!-- Main image (first image) -->
+                        <img id="mainImage"
+                             src="@Model.DeviceImages.First().ImagePath"
+                             class="img-fluid rounded mb-3"
+                             alt="Device image">
+
+
+                        <!-- Thumbnails -->
+                        <div class="d-flex gap-2 flex-wrap">
+                            @foreach (var image in Model.DeviceImages)
+                            {
+                                <img src="@image.ImagePath"
+                                     class="img-thumbnail thumbnail"
+                                     width="70"
+                                     style="cursor:pointer"
+                                     onclick="changeImage('@image.ImagePath')"
+                                     alt="Device image">
+                            }
+                        </div>
+
+                    }
+                    else
+                    {
+                        <!-- Fallback -->
+                        <img src="/images/device-placeholder.png"
+                             class="img-fluid rounded"
+                             alt="No image available">
+                    }
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Device Info -->
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <h3 class="mb-1">@Model.Model</h3>
+                    <p class="text-muted">(@Model.Brand · @Model.DeviceType)</p>
+                    @if (Model.Status == "Active")
+                    {
+
+
+                        <span class="badge bg-success mb-3">@Model.Status</span>
+                      
+                    }
+                    else if (Model.Status == "Lost")
+                    {
+
+                         <span class="badge bg-danger mb-3">@Model.Status</span>
+                    
+                    }
+
+                   
+
+                    <hr>
+
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">IMEI</dt>
+                        <dd class="col-sm-8"><code>@Model.Identifier</code></dd>
+
+                        <dt class="col-sm-4">Registered On</dt>
+                        <dd class="col-sm-8">Jan 12, 2026</dd>
+
+                        <dt class="col-sm-4">Owner</dt>
+                        <dd class="col-sm-8">@Model.User?.FullName</dd>
+
+                        <dt class="col-sm-4">Notes</dt>
+                        <dd class="col-sm-8">@Model.Notes </dd>
+                    </dl>
+
+                    <hr>
+
+                    <div class="d-flex gap-2">
+                        <a asp-action="EditDevice"
+                           asp-route-id="@Model.Id"
+                           class="btn btn-sm btn-outline-primary"
+                           title="Edit">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                       
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+
+    function changeImage(src) {
+        document.getElementById("mainImage").src = src;
+    }
+
+</script>
+*@

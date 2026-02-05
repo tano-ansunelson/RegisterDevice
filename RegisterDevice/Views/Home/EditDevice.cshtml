@@ -1,0 +1,279 @@
+﻿@model RegisterDevice.Models.RegisteredDevice
+
+@{
+    ViewData["Title"] = "Edit Device";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            background-color: #ffffff;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+            .sidebar .nav-link {
+                color: #495057;
+                padding: 0.875rem 1.25rem;
+                border-left: 3px solid transparent;
+                transition: all 0.2s;
+            }
+
+                .sidebar .nav-link:hover {
+                    background-color: #f8f9fa;
+                    color: #0d6efd;
+                }
+
+                .sidebar .nav-link.active {
+                    color: #0d6efd;
+                    background-color: #e7f1ff;
+                    border-left-color: #0d6efd;
+                }
+
+        .main-content {
+            padding: 2rem;
+        }
+
+        .form-card {
+            max-width: 720px;
+        }
+
+        @@media (max-width: 767.98px) {
+            .main-content {
+                width: 100% !important;
+                margin: 0 !important;
+                padding-top: 1rem !important;
+            }
+        }
+    </style>
+}
+
+<div class="container-fluid">
+    <div class="row">
+
+         <!-- Sidebar -->
+        <div class="offcanvas-md offcanvas-start sidebar col-md-3 col-lg-2 px-0"
+             tabindex="-1"
+             id="sidebarMenu">
+
+            <nav class="nav flex-column pt-3">
+                <a class="nav-link active" asp-controller="Home" asp-action="Index">
+                    <i @* class="bi bi-laptop me-2" *@></i> ← Back to My Devices
+                </a>
+@* 
+                <a class="nav-link" asp-controller="Home" asp-action="RegisterDevice">
+                    <i class="bi bi-plus-circle me-2"></i>Register Device
+                </a>
+
+                <a class="nav-link" asp-controller="Public" asp-action="CheckDevice">
+                    <i class="bi bi-search me-2"></i>Check Device
+                </a> *@
+            </nav>
+        </div> 
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 main-content">
+
+            <div class="mb-4">
+                <div class="d-md-none mb-3">
+                    <button class="btn btn-outline-primary"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#sidebarMenu">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
+
+                <h1 class="h3 mb-1">Edit Device</h1>
+                <p class="text-muted">Update your device information</p>
+            </div>
+
+            <!-- Card -->
+            <div class="card shadow-sm form-card mx-auto mt-3">
+                <div class="card-body p-4">
+
+                    <form asp-action="EditDevice" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+
+                        <!-- Device Type -->
+                        <div class="mb-4">
+                            <label class="form-label">Device Type</label>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="DeviceType"
+                                               id="devicePhone"
+                                               value="Phone"
+                                               checked = "@(Model.DeviceType == "Phone")">
+                                        <label class="form-check-label">
+                                            <i class="bi bi-phone me-2"></i>Mobile Phone
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="DeviceType"
+                                               id="deviceLaptop"
+                                               value="Laptop"
+                                               checked="@(Model.DeviceType=="Laptop")">
+                                        <label class="form-check-label">
+                                            <i class="bi bi-laptop me-2"></i>Laptop
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Brand & Model -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Brand</label>
+                                <select class="form-select" id="brandSelect" name="Brand" required></select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Model</label>
+                                <input type="text"
+                                       class="form-control"
+                                       name="Model"
+                                       value="@Model.Model"
+                                       required />
+                            </div>
+                        </div>
+
+                        <!-- IMEI / Serial -->
+                        <div class="mb-3">
+                            <label class="form-label">IMEI / Serial Number</label>
+                            <input type="text"
+                                   class="form-control"
+                                   name="Identifier"
+                                   value="@Model.Identifier"
+                                   readonly />
+
+                            <div class="form-text text-warning">
+                                Identifier cannot be changed after registration.
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="mb-4">
+                            <label class="form-label">Additional Notes</label>
+                            <textarea class="form-control" name="Notes" rows="3">
+                           @Model.Notes
+                            </textarea>
+                        </div>
+
+                        <!-- Existing Images -->
+                        <div class="mb-4">
+                            <label class="form-label">Device Images</label>
+
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                @foreach(var img in Model.DeviceImages)
+                                    {
+                                        <img src="@img.ImagePath"
+                                        class="img-thumbnail"
+                                        width="100"
+                                        style="object-fit:cover" />
+                                        
+                                    }
+                                </div>
+
+                            <input type="file"
+                                   name="DeviceImages"
+                                   class="form-control"
+                                   accept="image/*"
+                                   multiple />
+
+                            <div class="form-text">
+                                Upload more images if needed. Existing images will remain.
+                            </div>
+
+                            <div id="imagePreview" class="d-flex flex-wrap gap-2 mt-3"></div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                            <!--gap-2-->
+                            <div class="d-flex ">
+                              @*   <button type="button" class="btn btn-outline-danger">
+                                    <i class="bi bi-trash me-2"></i>Delete
+                                </button> *@
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save me-2"></i>Save Changes
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const phoneBrands = [
+        "Apple", "Samsung", "Google", "Xiaomi",
+        "Huawei", "Tecno", "Infinix", "Nokia", "Other"
+    ];
+
+    const laptopBrands = [
+        "Dell", "HP", "Lenovo", "Apple",
+        "Asus", "Acer", "MSI", "Microsoft", "Other"
+    ];
+
+    const brandSelect = document.getElementById("brandSelect");
+    const phoneRadio = document.getElementById("devicePhone");
+    const laptopRadio = document.getElementById("deviceLaptop");
+
+    function loadBrands(brands) {
+        brandSelect.innerHTML = '<option value="">Select brand</option>';
+        brands.forEach(b => {
+            const opt = document.createElement("option");
+            opt.value = b;
+            opt.textContent = b;
+            brandSelect.appendChild(opt);
+        });
+    }
+
+    loadBrands(phoneBrands);
+
+    // Example existing brand
+    setTimeout(() => {
+        brandSelect.value = "Apple";
+    }, 0);
+
+    phoneRadio.addEventListener("change", () => loadBrands(phoneBrands));
+    laptopRadio.addEventListener("change", () => loadBrands(laptopBrands));
+
+    // Image preview
+    const imageInput = document.querySelector('input[name="DeviceImages"]');
+    const preview = document.getElementById("imagePreview");
+
+    imageInput.addEventListener("change", () => {
+        preview.innerHTML = "";
+        [...imageInput.files].forEach(file => {
+            if (!file.type.startsWith("image")) return;
+            const img = document.createElement("img");
+            img.src = URL.createObjectURL(file);
+            img.className = "img-thumbnail";
+            img.style.width = "100px";
+            img.style.height = "100px";
+            img.style.objectFit = "cover";
+            preview.appendChild(img);
+        });
+    });
+</script>

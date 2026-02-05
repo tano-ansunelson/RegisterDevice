@@ -1,0 +1,107 @@
+﻿@{
+    ViewData["Title"] = "Device Registry";
+}
+
+@section Styles {
+    <style>
+        .hero {
+            background: linear-gradient(135deg, #0d6efd, #0a58ca);
+            color: #fff;
+            padding: 4rem 1rem;
+        }
+
+            .hero h1 {
+                font-weight: 700;
+            }
+
+            .hero p {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #0d6efd;
+        }
+
+        .cta-section {
+            background-color: #f8f9fa;
+            padding: 3rem 1rem;
+        }
+    </style>
+}
+
+<!-- HERO SECTION -->
+<section class="hero text-center">
+    <div class="container">
+        <h1 class="display-5 mb-3">
+            Protect & Verify Your Devices
+        </h1>
+        <p class="lead mb-4">
+            Register your devices, report stolen ones, and allow anyone to
+            verify device status using IMEI or serial number.
+        </p>
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg">
+                <i class="bi bi-person-plus me-2"></i>Get Started
+            </a>
+            <a asp-controller="Public" asp-action="CheckDevice" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-search me-2"></i>Check Device
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="container py-5">
+    <div class="row text-center mb-4">
+        <h2 class="fw-bold">Why Use Device Registry?</h2>
+        <p class="text-muted">
+            Simple. Secure. Reliable.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4 text-center">
+            <i class="bi bi-shield-check feature-icon"></i>
+            <h5 class="mt-3">Register Devices</h5>
+            <p class="text-muted">
+                Securely store your device details and prove ownership anytime.
+            </p>
+        </div>
+
+        <div class="col-md-4 text-center">
+            <i class="bi bi-exclamation-triangle feature-icon"></i>
+            <h5 class="mt-3">Report Lost Devices</h5>
+            <p class="text-muted">
+                Mark devices as lost or stolen to alert the public.
+            </p>
+        </div>
+
+        <div class="col-md-4 text-center">
+            <i class="bi bi-search feature-icon"></i>
+            <h5 class="mt-3">Public Verification</h5>
+            <p class="text-muted">
+                Anyone can check a device using IMEI before buying.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- CALL TO ACTION -->
+<section class="cta-section text-center">
+    <div class="container">
+        <h3 class="fw-bold mb-3">
+            Ready to secure your devices?
+        </h3>
+        <p class="text-muted mb-4">
+            Create an account in less than a minute.
+        </p>
+        <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg">
+            Create Free Account
+        </a>
+    </div>
+</section>
+
+
