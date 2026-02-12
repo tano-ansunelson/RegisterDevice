@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Check Device";
 }
 
@@ -55,10 +56,10 @@
 }
 
 <div class="check-page container-fluid">
-    <div class="row">
+   @*  <div class="row"> *@
 
         <!-- Sidebar -->
-        <div class="offcanvas-md offcanvas-start sidebar col-md-3 col-lg-2 px-0"
+       @*  <div class="offcanvas-md offcanvas-start sidebar col-md-3 col-lg-2 px-0"
              tabindex="-1"
              id="sidebarMenu">
 
@@ -75,7 +76,7 @@
                     <i class="bi bi-search me-2"></i>Check Device
                 </a>
             </nav>
-        </div>
+        </div> *@
 
         <!-- Main content -->
         <div class="col-md-9 col-lg-10">
@@ -101,11 +102,12 @@
                         </p>
                     </div>
 
-                    <form>
+                    <form method="post">
                         <div class="mb-3">
                             <label class="form-label">IMEI Number</label>
                             <input type="text"
-                                   class="form-control"
+                                   name="identifier"
+                                   class="form-control mb-3"
                                    placeholder="Enter 15-digit IMEI"
                                    maxlength="15" />
                             <div class="form-text">
@@ -113,10 +115,25 @@
                             </div>
                         </div>
 
-                        <a asp-action="Details" class="btn btn-primary w-100">
-                            <i class="bi bi-search me-2"></i>Check Device
-                        </a>
+                        <button type="submit" class="btn btn-primary w-100">
+                            Search
+                        </button>
                     </form>
+
+                    @if (ViewBag.NotFound == true)
+                    {
+                      <div class="alert alert-success mt-3">
+
+                          No lost record found for this device.
+                      </div>
+                    }
+                    @foreach( var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        
+                        <div class="alert alert-danger mt-3">
+                            @error.ErrorMessage
+                        </div>
+                    }
 
                 </div>
             </div>
@@ -126,5 +143,5 @@
 
 
 
-    </div>
+ @*    </div> *@
 </div>

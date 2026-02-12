@@ -55,6 +55,434 @@
 <div class="container-fluid">
     <div class="row">
 
+        <!-- Sidebar -->
+        <div class="offcanvas-md offcanvas-start sidebar col-md-3 col-lg-2 px-0"
+             tabindex="-1"
+             id="sidebarMenu">
+
+            <div class="offcanvas-header d-md-none border-bottom">
+                <h5 class="offcanvas-title">Menu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu"></button>
+            </div>
+
+            <nav class="nav flex-column pt-3">
+                <a class="nav-link active" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-arrow-left me-2"></i>Back to My Devices
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 main-content">
+
+            <!-- Header -->
+            <div class="mb-4">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <button class="btn btn-outline-secondary d-md-none"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#sidebarMenu">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h1 class="h3 mb-1 fw-bold">
+                            <i class="bi bi-pencil-square text-primary me-2"></i>
+                            Edit Device
+                        </h1>
+                        <p class="text-muted mb-0">Update your device information</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Device Info Summary -->
+            <div class="form-card mx-auto mb-4">
+                <div class="alert alert-info border-0 shadow-sm">
+                    <div class="d-flex align-items-start">
+                        <div class="bg-info bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width: 40px; height: 40px;">
+                            <i class="bi bi-info-circle-fill text-info"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Editing: @Model.Brand @Model.Model</h6>
+                            <p class="mb-0 small">You're updating the information for this device. The IMEI/Serial number cannot be changed for security reasons.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Form Card -->
+            <div class="card border-0 shadow-sm form-card mx-auto">
+                <div class="card-body p-4">
+
+                    <form asp-action="EditDevice" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+
+                        <!-- Device Type -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-tag-fill text-primary me-2"></i>
+                                Device Type
+                            </label>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <input class="btn-check"
+                                           type="radio"
+                                           name="DeviceType"
+                                           id="devicePhone"
+                                           value="Phone"
+                                           checked="@(Model.DeviceType == "Phone")">
+                                    <label class="btn btn-outline-primary w-100 py-3" for="devicePhone">
+                                        <i class="bi bi-phone fs-4 d-block mb-2"></i>
+                                        <span class="fw-semibold">Mobile Phone</span>
+                                    </label>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <input class="btn-check"
+                                           type="radio"
+                                           name="DeviceType"
+                                           id="deviceLaptop"
+                                           value="Laptop"
+                                           checked="@(Model.DeviceType == "Laptop")">
+                                    <label class="btn btn-outline-primary w-100 py-3" for="deviceLaptop">
+                                        <i class="bi bi-laptop fs-4 d-block mb-2"></i>
+                                        <span class="fw-semibold">Laptop</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Brand & Model -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-building text-primary me-2"></i>
+                                    Brand
+                                </label>
+                                <select class="form-select form-select-lg" id="brandSelect" name="Brand" required></select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-phone text-primary me-2"></i>
+                                    Model
+                                </label>
+                                <input type="text"
+                                       class="form-control form-select-lg"
+                                       name="Model"
+                                       value="@Model.Model"
+                                       placeholder="e.g. iPhone 14 Pro"
+                                       required />
+                            </div>
+                        </div>
+
+                        <!-- IMEI / Serial (Read-only) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-hash text-primary me-2"></i>
+                                IMEI / Serial Number
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-light">
+                                    <i class="bi bi-lock-fill text-muted"></i>
+                                </span>
+                                <input type="text"
+                                       class="form-control bg-light"
+                                       name="Identifier"
+                                       value="@Model.Identifier"
+                                       readonly />
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                <strong>Note:</strong> The identifier cannot be changed after registration for security reasons.
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Existing Images -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-images text-primary me-2"></i>
+                                Current Device Images
+                            </label>
+
+                            @if (Model.DeviceImages != null && Model.DeviceImages.Any())
+                            {
+                                <div class="d-flex flex-wrap gap-2 mb-3 p-3 bg-light rounded">
+                                    @foreach (var img in Model.DeviceImages)
+                                    {
+                                        <div class="position-relative">
+                                            <img src="@img.ImagePath"
+                                                 class="img-thumbnail border-2"
+                                                 width="120"
+                                                 height="120"
+                                                 style="object-fit:cover" />
+                                            <span class="position-absolute top-0 end-0 badge bg-success m-1">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                            </span>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning border-0 mb-3">
+                                    <small><i class="bi bi-exclamation-triangle me-1"></i>No images currently uploaded</small>
+                                </div>
+                            }
+
+                            <!-- Upload New Images -->
+                            <label class="form-label fw-semibold mt-3">
+                                <i class="bi bi-cloud-upload text-primary me-2"></i>
+                                Add More Images
+                            </label>
+
+                            <div class="border border-2 border-dashed rounded p-4 text-center bg-light">
+                                <i class="bi bi-cloud-upload text-primary fs-1 mb-3 d-block"></i>
+                                <input type="file"
+                                       name="DeviceImages"
+                                       class="form-control"
+                                       accept="image/*"
+                                       multiple
+                                       id="deviceImageInput" />
+                                <p class="text-muted mt-2 mb-0">
+                                    <small>Upload additional images. Existing images will be preserved.</small>
+                                </p>
+                            </div>
+
+                            <!-- New Image Preview -->
+                            <div id="imagePreview" class="d-flex flex-wrap gap-2 mt-3"></div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-journal-text text-primary me-2"></i>
+                                Additional Notes
+                            </label>
+                            <textarea class="form-control" name="Notes" rows="4" placeholder="Add any additional details about your device...">@Model.Notes</textarea>
+                            <div class="form-text">
+                                <small>Optional: Include identifying marks, scratches, or unique features.</small>
+                            </div>
+                        </div>
+
+                        <!-- Warning Alert -->
+                        <div class="alert alert-warning border-0 shadow-sm mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="bg-warning bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Review Your Changes</h6>
+                                    <p class="mb-0 small">Make sure all information is accurate before saving. Changes will update your device record immediately.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-flex justify-content-between gap-2 flex-wrap">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">
+                                <i class="bi bi-x-lg me-2"></i>Cancel
+                            </a>
+
+                            <div class="d-flex gap-2">
+                                <a asp-action="DeviceDetails" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-lg px-4">
+                                    <i class="bi bi-eye me-2"></i>View Details
+                                </a>
+                                <button type="submit" class="btn btn-primary btn-lg px-4">
+                                    <i class="bi bi-save me-2"></i>Save Changes
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- Help Section -->
+            <div class="form-card mx-auto mt-4">
+                <div class="alert alert-info border-0 shadow-sm">
+                    <div class="d-flex align-items-start">
+                        <div class="bg-info bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width: 40px; height: 40px;">
+                            <i class="bi bi-question-circle-fill text-info"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Need Help?</h6>
+                            <ul class="mb-0 small ps-3">
+                                <li>You can update brand, model, notes, and add more images</li>
+                                <li>The IMEI/Serial number is locked for security</li>
+                                <li>New images will be added to existing ones</li>
+                                <li>All changes are saved immediately upon submission</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const phoneBrands = [
+        "Apple", "Samsung", "Google", "Xiaomi",
+        "Huawei", "Tecno", "Infinix", "Nokia", "Other"
+    ];
+
+    const laptopBrands = [
+        "Dell", "HP", "Lenovo", "Apple",
+        "Asus", "Acer", "MSI", "Microsoft", "Other"
+    ];
+
+    const brandSelect = document.getElementById("brandSelect");
+    const phoneRadio = document.getElementById("devicePhone");
+    const laptopRadio = document.getElementById("deviceLaptop");
+
+    function loadBrands(brands) {
+        brandSelect.innerHTML = '<option value="">Select brand</option>';
+        brands.forEach(b => {
+            const opt = document.createElement("option");
+            opt.value = b;
+            opt.textContent = b;
+            brandSelect.appendChild(opt);
+        });
+    }
+
+    // Load initial brands based on device type
+    if (phoneRadio.checked) {
+        loadBrands(phoneBrands);
+    } else {
+        loadBrands(laptopBrands);
+    }
+
+    // Set existing brand value
+    setTimeout(() => {
+        brandSelect.value = "@Model.Brand";
+    }, 0);
+
+    phoneRadio.addEventListener("change", () => {
+        loadBrands(phoneBrands);
+        brandSelect.value = "@Model.Brand";
+    });
+
+    laptopRadio.addEventListener("change", () => {
+        loadBrands(laptopBrands);
+        brandSelect.value = "@Model.Brand";
+    });
+
+    // Image preview
+    const imageInput = document.querySelector('input[name="DeviceImages"]');
+    const preview = document.getElementById("imagePreview");
+
+    imageInput.addEventListener("change", () => {
+        preview.innerHTML = "";
+
+        const files = [...imageInput.files];
+
+        if (files.length > 0) {
+            // Add a header to the preview section
+            const previewHeader = document.createElement("div");
+            previewHeader.className = "w-100 mb-2";
+            previewHeader.innerHTML = '<small class="text-muted fw-semibold"><i class="bi bi-images me-1"></i>New Images to Upload (' + files.length + ')</small>';
+            preview.appendChild(previewHeader);
+        }
+
+        files.forEach((file, index) => {
+            if (!file.type.startsWith("image")) return;
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "position-relative";
+
+            const img = document.createElement("img");
+            img.src = URL.createObjectURL(file);
+            img.className = "img-thumbnail border-2";
+            img.style.width = "120px";
+            img.style.height = "120px";
+            img.style.objectFit = "cover";
+
+            // Add "new" badge
+            const badge = document.createElement("span");
+            badge.className = "position-absolute top-0 start-0 badge bg-primary m-1";
+            badge.innerHTML = '<i class="bi bi-plus-circle-fill me-1"></i>New';
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(badge);
+            preview.appendChild(wrapper);
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*  @model RegisterDevice.Models.RegisteredDevice
+
+@{
+    ViewData["Title"] = "Edit Device";
+}
+
+@section Styles {
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            background-color: #ffffff;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+            .sidebar .nav-link {
+                color: #495057;
+                padding: 0.875rem 1.25rem;
+                border-left: 3px solid transparent;
+                transition: all 0.2s;
+            }
+
+                .sidebar .nav-link:hover {
+                    background-color: #f8f9fa;
+                    color: #0d6efd;
+                }
+
+                .sidebar .nav-link.active {
+                    color: #0d6efd;
+                    background-color: #e7f1ff;
+                    border-left-color: #0d6efd;
+                }
+
+        .main-content {
+            padding: 2rem;
+        }
+
+        .form-card {
+            max-width: 720px;
+        }
+
+        @@media (max-width: 767.98px) {
+            .main-content {
+                width: 100% !important;
+                margin: 0 !important;
+                padding-top: 1rem !important;
+            }
+        }
+    </style>
+}
+
+<div class="container-fluid">
+    <div class="row">
+
          <!-- Sidebar -->
         <div class="offcanvas-md offcanvas-start sidebar col-md-3 col-lg-2 px-0"
              tabindex="-1"
@@ -62,16 +490,9 @@
 
             <nav class="nav flex-column pt-3">
                 <a class="nav-link active" asp-controller="Home" asp-action="Index">
-                    <i @* class="bi bi-laptop me-2" *@></i> ← Back to My Devices
+                    <i></i> ← Back to My Devices
                 </a>
-@* 
-                <a class="nav-link" asp-controller="Home" asp-action="RegisterDevice">
-                    <i class="bi bi-plus-circle me-2"></i>Register Device
-                </a>
-
-                <a class="nav-link" asp-controller="Public" asp-action="CheckDevice">
-                    <i class="bi bi-search me-2"></i>Check Device
-                </a> *@
+            
             </nav>
         </div> 
 
@@ -205,9 +626,7 @@
                             </a>
                             <!--gap-2-->
                             <div class="d-flex ">
-                              @*   <button type="button" class="btn btn-outline-danger">
-                                    <i class="bi bi-trash me-2"></i>Delete
-                                </button> *@
+                              
 
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-save me-2"></i>Save Changes
@@ -277,3 +696,4 @@
         });
     });
 </script>
+  *@
