@@ -101,34 +101,6 @@ namespace RegisterDevice.Controllers
             return View(_context.Users.ToList());
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         public IActionResult Login() => View ();
 
         [HttpPost]
