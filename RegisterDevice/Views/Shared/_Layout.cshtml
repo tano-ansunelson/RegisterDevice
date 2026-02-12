@@ -16,87 +16,111 @@
         <nav class="navbar navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid d-flex justify-content-between align-items-center">
 
-                <!-- LEFT -->
-                <span class="navbar-brand fw-semibold mb-0">
-                    My Devices
-                </span>
-
-                <!-- RIGHT: Logout always visible -->
-                @if(User.Identity !=null && User.Identity.IsAuthenticated)
+                @if (Context.Session.GetString("IsAdmin") == "true")
                 {
+                    <!-- ADMIN Navbar -->
+                    <span class="navbar-brand fw-semibold mb-0">
+                        Admin Panel
+                    </span>
+                    <span class="text-muted">
+                        Welcome, <strong>Admin</strong>
+                    </span>
+                    <a class="btn btn-outline-danger btn-sm"
+                       asp-controller="Admin"
+                       asp-action="Logout">
+                        <i class="bi bi-box-arrow-right me-1"></i>Logout
+                    </a>
+                }
+                else if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <!-- USER Navbar -->
+                    <span class="navbar-brand fw-semibold mb-0">
+                        My Devices
+                    </span>
                     <span class="text-muted">
                         Welcome, <strong>@User.Identity.Name</strong>
                     </span>
-                        <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#logoutModal"
-                        >
-                            <i class="bi bi-box-arrow-right me-1"></i>Logout
-                        </button>
-                    
+                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#logoutModal">
+                        <i class="bi bi-box-arrow-right me-1"></i>Logout
+                    </button>
                 }
                 else
                 {
-                    <!-- Guest user -->
-                    <a class="btn btn-outline-primary btn-sm"
-                       asp-controller="Account"
-                       asp-action="Login">
-                        Login
-                    </a>
-                   
+                    <span class="navbar-brand fw-semibold mb-0">
+                        My Devices
+                    </span>
 
+                    <div class="ms-auto d-flex align-items-center gap-2">
+                      
 
+                        @if (Context.Request.Path == "/Account/Login")
+                        {
+                            <!-- Home link always visible for guests -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Home"
+                               asp-action="LandingPage">
+                                Home
+                            </a>
+
+                            <!-- On Login page: show Register link -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Account"
+                               asp-action="Register">
+                                Register
+                            </a>
+                        }
+                        else if (Context.Request.Path == "/Account/Register")
+                        {
+
+                            <!-- Home link always visible for guests -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Home"
+                               asp-action="LandingPage">
+                                Home
+                            </a>
+
+                            <!-- On Register page: show Login link -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Account"
+                               asp-action="Login">
+                                Login
+                            </a>
+                        }
+                        else if (Context.Request.Path == "/Admin/Login")
+                        {
+                            <!-- Home link always visible for guests -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Home"
+                               asp-action="LandingPage">
+                                Home
+                            </a>
+                        }
+
+                        else
+                        {
+                            <!-- On all other guest pages: show both -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Account"
+                               asp-action="Login">
+                                Login
+                            </a>
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Account"
+                               asp-action="Register">
+                                Register
+                            </a>
+                        }
+                    </div>
                 }
-
 
             </div>
         </nav>
-
         @RenderSection("Styles", required: false)
     </header>
 
 
-  @*   <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Register Device</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <ul class="navbar-nav flex-grow-1">
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                </li>
-                </ul>
-                <div class=" navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li> 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
-                        </li> 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                        </li>
-                          <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Details">Details</a>
-                        </li> 
-                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RegisterDevice">Device</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Public" asp-action="CheckDevice">Check Device</a>
-                        </li> 
-                    </ul>
-                </div> 
-            </div>
-        </nav>
-        @RenderSection("Styles", required: false)
-    </header>*@
+ 
 
     <div class="container">
         <partial name="_LogoutModal"/>
