@@ -96,7 +96,26 @@
                                 Home
                             </a>
                         }
-
+                        else if(Context.Request.Path == "/Public/CheckDevice")
+                        {
+                            <!-- Home link always visible for guests -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Home"
+                               asp-action="LandingPage">
+                                Home
+                            </a>
+                            <!-- On all other guest pages: show both -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Account"
+                               asp-action="Login">
+                                Login
+                            </a>
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Account"
+                               asp-action="Register">
+                                Register
+                            </a>
+                        }
                         else
                         {
                             <!-- On all other guest pages: show both -->
@@ -118,6 +137,10 @@
             </div>
         </nav>
         @RenderSection("Styles", required: false)
+
+        <style>
+           
+        </style>
     </header>
 
 

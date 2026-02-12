@@ -1,4 +1,156 @@
-﻿
+﻿@model RegisterDevice.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+@section Styles {
+    <style>
+        .login-page {
+            background-color: #f8f9fa;
+            min-height: calc(100vh - 56px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .auth-card {
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 0.5rem 0;
+            color: #aaa;
+            font-size: 0.8rem;
+        }
+
+            .divider::before,
+            .divider::after {
+                content: '';
+                flex: 1;
+                border-bottom: 1px solid #ddd;
+                margin: 0 8px;
+            }
+    </style>
+}
+
+<div class="login-page">
+    <div class="card auth-card">
+        <div class="card-body p-3 p-md-4">
+
+            <!-- HEADER: compact -->
+            <div class="text-center mb-3">
+                <i class="bi bi-shield-lock text-primary" style="font-size: 1.8rem;"></i>
+                <h5 class="mt-1 mb-0">Login</h5>
+                <small class="text-muted">Access your device registry account</small>
+            </div>
+
+            <div asp-validation-summary="All" class="text-danger small mb-2"></div>
+
+            <form asp-action="Login" method="post">
+
+                <!-- Email -->
+                <div class="mb-2">
+                    <label class="form-label small mb-1">Email or Username</label>
+                    <input asp-for="Login" type="text" class="form-control form-control-sm" required />
+                    <span asp-validation-for="Login" class="text-danger small"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-2">
+                    <label class="form-label small mb-1">Password</label>
+                    <div class="input-group input-group-sm">
+                        <input asp-for="Password"
+                               id="studentPassword"
+                               type="password"
+                               class="form-control form-control-sm"
+                               required />
+                        <span class="input-group-text" style="cursor:pointer"
+                              onclick="togglePassword('studentPassword','studentEye')">
+                            <i class="bi bi-eye" id="studentEye"></i>
+                        </span>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                    <div class="form-text" style="font-size:0.7rem;">Minimum 8 characters</div>
+                </div>
+
+                <!-- Remember me + Forgot password -->
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input">
+                        <label class="form-check-label" style="font-size:0.78rem;">Remember me</label>
+                    </div>
+                    <a href="#" style="font-size:0.78rem;">Forgot password?</a>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn btn-primary btn-sm w-100" id="loginBtn">
+                    <span class="btn-text">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                    </span>
+                    <span class="spinner-border spinner-border-sm d-none"
+                          role="status"
+                          aria-hidden="true"
+                          id="loginSpinner">
+                    </span>
+                </button>
+
+            </form>
+
+            <div class="divider mt-2">OR</div>
+
+            <div class="text-center">
+                <small class="text-muted">Don't have an account? </small>
+                <a asp-action="Register" class="small fw-semibold">Create Account</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        const btnText = document.querySelector(".btn-text");
+        const spinner = document.getElementById("loginSpinner");
+        const button = document.getElementById("loginBtn");
+
+        if (!form) return;
+
+        form.addEventListener("submit", function () {
+            btnText.classList.add("d-none");
+            spinner.classList.remove("d-none");
+            button.disabled = true;
+        });
+    });
+
+    function togglePassword(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.replace("bi-eye", "bi-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.replace("bi-eye-slash", "bi-eye");
+        }
+    }
+</script>
+
+
+
+
+
+
+
+
+
+@* 
 @model RegisterDevice.Models.LoginViewModel
 @{
     ViewData["Title"] = "Login";
@@ -130,3 +282,4 @@
     }
 </script>
 
+ *@
