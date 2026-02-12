@@ -16,51 +16,109 @@
         <nav class="navbar navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
 
-                <!-- LEFT -->
-                <span class="navbar-brand fw-semibold mb-0">
-                    My Devices
-                </span>
+                @if (Context.Session.GetString("IsAdmin") == "true")
+                {
+                    <!-- ADMIN Navbar -->
+                    <span class="navbar-brand fw-semibold mb-0">
+                        Admin Panel
+                    </span>
+                    <span class="text-muted">
+                        Welcome, <strong>Admin</strong>
+                    </span>
+                    <a class="btn btn-outline-danger btn-sm"
+                       asp-controller="Admin"
+                       asp-action="Logout">
+                        <i class="bi bi-box-arrow-right me-1"></i>Logout
+                    </a>
+                }
+                else if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <!-- USER Navbar -->
+                    <span class="navbar-brand fw-semibold mb-0">
+                        My Devices
+                    </span>
+                    <span class="text-muted">
+                        Welcome, <strong>@User.Identity.Name</strong>
+                    </span>
+                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#logoutModal">
+                        <i class="bi bi-box-arrow-right me-1"></i>Logout
+                    </button>
+                }
+                else
+                {
+                    <span class="navbar-brand fw-semibold mb-0">
+                        My Devices
+                    </span>
 
-                <!-- RIGHT -->
-                <div class="d-flex align-items-center gap-2 ms-auto">
+                    <div class="ms-auto d-flex align-items-center gap-2">
+                      
 
-                    @if (User.Identity != null && User.Identity.IsAuthenticated)
-                    {
-                        <span class="text-muted me-2">
-                            Welcome, <strong>@User.Identity.Name</strong>
-                        </span>
+                        @if (Context.Request.Path == "/Account/Login")
+                        {
+                            <!-- Home link always visible for guests -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Home"
+                               asp-action="LandingPage">
+                                Home
+                            </a>
 
-                        <button class="btn btn-outline-danger btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#logoutModal">
-                            <i class="bi bi-box-arrow-right me-1"></i>Logout
-                        </button>
-                    }
-                    else
-                    {
-                        <a class="btn btn-outline-secondary btn-sm"
-                           asp-controller="Home"
-                           asp-action="LandingPage">
-                            Home
-                        </a>
+                            <!-- On Login page: show Register link -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Account"
+                               asp-action="Register">
+                                Register
+                            </a>
+                        }
+                        else if (Context.Request.Path == "/Account/Register")
+                        {
 
-                        <a class="btn btn-outline-primary btn-sm"
-                           asp-controller="Account"
-                           asp-action="Login">
-                            Login
-                        </a>
+                            <!-- Home link always visible for guests -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Home"
+                               asp-action="LandingPage">
+                                Home
+                            </a>
 
-                       
-                    }
+                            <!-- On Register page: show Login link -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Account"
+                               asp-action="Login">
+                                Login
+                            </a>
+                        }
+                        else if (Context.Request.Path == "/Admin/Login")
+                        {
+                            <!-- Home link always visible for guests -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Home"
+                               asp-action="LandingPage">
+                                Home
+                            </a>
+                        }
 
-                </div>
+                        else
+                        {
+                            <!-- On all other guest pages: show both -->
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Account"
+                               asp-action="Login">
+                                Login
+                            </a>
+                            <a class="nav-link text-dark fw-semibold px-2 rounded hover-link"
+                               asp-controller="Account"
+                               asp-action="Register">
+                                Register
+                            </a>
+                        }
+                    </div>
+                }
+
 
             </div>
         </nav>
-
         @RenderSection("Styles", required: false)
     </header>
-
 
 
   @*   <header>
