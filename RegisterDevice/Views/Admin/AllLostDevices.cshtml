@@ -1,0 +1,428 @@
+﻿@model List<LostDeviceViewModel>
+@{
+    ViewData["Title"] = "Lost Devices";
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+    .page-root {
+        font-family: 'DM Sans', sans-serif;
+        background: #f5f4f0;
+        min-height: 100vh;
+        padding: 2.5rem 0 4rem;
+    }
+
+    /* ── Page Header ── */
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-eyebrow {
+        font-size: 0.68rem;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #9e9b94;
+        margin-bottom: 0.3rem;
+    }
+
+    .page-title {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 2rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        line-height: 1.15;
+        margin: 0;
+    }
+
+        .page-title span {
+            color: #dc3545;
+        }
+
+    .back-link {
+        font-size: 0.8rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #6b6860;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: color 0.2s;
+    }
+
+        .back-link:hover {
+            color: #1a1a1a;
+        }
+
+    /* ── Search / Filter Bar ── */
+    .filter-bar {
+        background: #fff;
+        border: 1px solid #e2e0d8;
+        border-radius: 2px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+        .filter-bar .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 180px;
+        }
+
+            .filter-bar .search-wrap i {
+                position: absolute;
+                left: 0.75rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #9e9b94;
+                font-size: 0.9rem;
+            }
+
+        .filter-bar input[type="text"] {
+            padding-left: 2.1rem;
+            border: 1px solid #dbd9d2;
+            border-radius: 2px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            background: #fafaf8;
+            width: 100%;
+            height: 38px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+            .filter-bar input[type="text"]:focus {
+                outline: none;
+                border-color: #212529;
+                box-shadow: 0 0 0 3px rgba(33,37,41,0.07);
+                background: #fff;
+            }
+
+        .filter-bar select {
+            border: 1px solid #dbd9d2;
+            border-radius: 2px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            color: #1a1a1a;
+            background: #fafaf8;
+            padding: 0 0.85rem;
+            height: 38px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+            .filter-bar select:focus {
+                outline: none;
+                border-color: #212529;
+            }
+
+    .count-tag {
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #9e9b94;
+        white-space: nowrap;
+    }
+
+    /* ── Card / Table ── */
+    .data-card {
+        background: #fff;
+        border: 1px solid #e2e0d8;
+        border-radius: 2px;
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.05);
+    }
+
+        .data-card::before {
+            content: '';
+            display: block;
+            height: 3px;
+            background: #dc3545;
+        }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+        .data-table thead tr {
+            border-bottom: 1px solid #eceae4;
+        }
+
+        .data-table thead th {
+            padding: 0.9rem 1.1rem;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #9e9b94;
+            background: #fafaf8;
+            white-space: nowrap;
+        }
+
+            .data-table thead th:first-child {
+                padding-left: 1.5rem;
+            }
+
+            .data-table thead th:last-child {
+                padding-right: 1.5rem;
+            }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid #f0ede8;
+            transition: background 0.15s;
+        }
+
+            .data-table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+            .data-table tbody tr:hover {
+                background: #fafaf8;
+            }
+
+        .data-table tbody td {
+            padding: 1rem 1.1rem;
+            color: #3a3835;
+            vertical-align: middle;
+        }
+
+            .data-table tbody td:first-child {
+                padding-left: 1.5rem;
+            }
+
+            .data-table tbody td:last-child {
+                padding-right: 1.5rem;
+            }
+
+    .device-brand {
+        font-weight: 500;
+        color: #1a1a1a;
+    }
+
+    .imei-code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.82rem;
+        background: #f0ede8;
+        color: #5a5855;
+        padding: 0.25rem 0.55rem;
+        border-radius: 2px;
+        letter-spacing: 0.04em;
+    }
+
+    .date-cell {
+        font-size: 0.82rem;
+        color: #9e9b94;
+        white-space: nowrap;
+    }
+
+    .alert-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        background: #fff1f2;
+        color: #dc3545;
+        border: 1px solid #fecdd3;
+        border-radius: 2px;
+        padding: 0.2rem 0.55rem;
+    }
+
+    .row-index {
+        font-size: 0.75rem;
+        color: #c2bfb8;
+        font-weight: 400;
+        min-width: 2rem;
+    }
+
+    /* ── Pagination ── */
+    .table-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #eceae4;
+        background: #fafaf8;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .footer-info {
+        font-size: 0.78rem;
+        color: #9e9b94;
+    }
+
+    .pager {
+        display: flex;
+        gap: 0.3rem;
+    }
+
+        .pager a, .pager span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            border: 1px solid #dbd9d2;
+            border-radius: 2px;
+            text-decoration: none;
+            color: #6b6860;
+            background: #fff;
+            transition: all 0.15s;
+        }
+
+            .pager a:hover {
+                background: #f0ede8;
+                border-color: #c2bfb8;
+                color: #1a1a1a;
+            }
+
+            .pager span.active {
+                background: #212529;
+                border-color: #212529;
+                color: #fff;
+            }
+
+    /* ── Empty State ── */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #9e9b94;
+    }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.4;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+</style>
+
+<div class="page-root">
+    <div class="container-fluid px-4">
+
+        <!-- Header -->
+        <div class="page-header d-flex justify-content-between align-items-end flex-wrap gap-3">
+            <div>
+                <p class="page-eyebrow">Reports · Alerts</p>
+                <h1 class="page-title">Lost <span>Devices</span></h1>
+            </div>
+            <a asp-controller="Admin" asp-action="Dashboard" class="back-link">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="search-wrap">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by brand, model or IMEI…" oninput="filterTable()" />
+            </div>
+            <select id="brandFilter" onchange="filterTable()">
+                <option value="">All Brands</option>
+                @foreach (var brand in Model.Select(d => d.Brand).Distinct().OrderBy(b => b))
+                {
+                    <option value="@brand">@brand</option>
+                }
+            </select>
+            <span class="count-tag" id="countTag">@Model.Count() records</span>
+        </div>
+
+        <!-- Table Card -->
+        <div class="data-card">
+            <div class="table-responsive">
+                <table class="data-table" id="mainTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Brand</th>
+                            <th>Model</th>
+                            <th>IMEI</th>
+                            <th>Owner</th>
+                            <th>Reported</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int idx = 1;
+                        }
+                        @foreach (var d in Model)
+                        {
+                            <tr>
+                                <td class="row-index">@idx</td>
+                                <td><span class="device-brand">@d.Brand</span></td>
+                                <td class="text-muted">@d.Model</td>
+                                <td><span class="imei-code">@(d.Identifier.Substring(0, 6))•••••</span></td>
+                                <td>@d.OwnerName</td>
+                                <td class="date-cell"><i class="bi bi-calendar3 me-1"></i>@d.ReportedAt.ToString("MMM dd, yyyy")</td>
+                                <td><span class="alert-badge"><i class="bi bi-exclamation-triangle-fill"></i>Lost</span></td>
+                            </tr>
+                            idx++;
+                        }
+                    </tbody>
+                </table>
+                @if (!Model.Any())
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-shield-check"></i>
+                        <p>No lost devices reported. All clear.</p>
+                    </div>
+                }
+            </div>
+            <div class="table-footer">
+                <span class="footer-info" id="footerCount">Showing @Model.Count() of @Model.Count() results</span>
+                <div class="pager">
+                    <a href="#"><i class="bi bi-chevron-left" style="font-size:0.7rem"></i></a>
+                    <span class="active">1</span>
+                    <a href="#"><i class="bi bi-chevron-right" style="font-size:0.7rem"></i></a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function filterTable() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const brand  = document.getElementById('brandFilter').value.toLowerCase();
+        const rows   = document.querySelectorAll('#mainTable tbody tr');
+        let visible  = 0;
+
+        rows.forEach(row => {
+            const text   = row.innerText.toLowerCase();
+            const rowBrand = row.cells[1]?.innerText.toLowerCase() || '';
+            const matchSearch = text.includes(search);
+            const matchBrand  = !brand || rowBrand === brand;
+
+            if (matchSearch && matchBrand) {
+                row.style.display = '';
+                visible++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        document.getElementById('countTag').innerText = visible + ' records';
+        document.getElementById('footerCount').innerText = 'Showing ' + visible + ' of ' + rows.length + ' results';
+    }
+</script>

@@ -1,6 +1,7 @@
 ﻿using AspNetCoreGeneratedDocument;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using RegisterDevice.Data;
@@ -147,6 +148,72 @@ namespace RegisterDevice.Controllers
 
             return null;
         }
+
+
+         public async Task<IActionResult> AllUsers()
+        {
+
+            var users = await _context.Users
+                .Select(u => new AdminUserViewModel
+                {
+                    FullName = u.FullName,
+                    Email = u.Email,
+                   
+                    DeviceCount = _context.MyDevices.Count(d => d.UserId == u.Id),
+
+
+                })
+                .ToListAsync();
+
+
+
+            return View(users);
+        }
+
+        public async Task<IActionResult> AllDevices() { 
+        
+        var devices =await _context.MyDevices
+                .Include(d => d.User)
+                .Select(d => new DeviceViewModel
+                {
+                  Id = d.Id,
+                  Brand = d.Brand,
+                  Model = d.Model,
+                  Identifier = d.Identifier,
+                  OwnerName= d.User.FullName,
+                  RegisteredAt= d.RegisteredAt,
+                  Status = d.Status,
+
+
+                }).ToListAsync();
+
+            return View(devices);
+        
+        
+        }
+
+
+
+        public async Task<IActionResult> AllLostDevices() {
+
+            var lostDevices = await _context.MyDevices
+                    .Where(d => d.Status == "Lost")
+                    .Include(d => d.User)
+                    .Select(d => new LostDeviceViewModel { 
+                     Brand = d.Brand,
+                     Model = d.Model,
+                     Identifier = d.Identifier,
+                     OwnerName =d.User.FullName,
+                     ReportedAt= d.RegisteredAt,
+                    
+                    
+                    })
+                    .ToListAsync();
+        
+        
+        return View(lostDevices);
+        }
+
 
 
 

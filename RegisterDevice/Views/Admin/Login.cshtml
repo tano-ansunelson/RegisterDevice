@@ -1,5 +1,168 @@
 ﻿@model RegisterDevice.Models.AdminLoginViewModel
 
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+    .admin-login-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f5f4f0;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .admin-login-card {
+        background: #ffffff;
+        border: 1px solid #e2e0d8;
+        border-radius: 2px;
+        padding: 3rem 3.5rem;
+        width: 100%;
+        max-width: 420px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.06);
+        position: relative;
+    }
+
+        .admin-login-card::before {
+            content: '';
+            display: block;
+            height: 3px;
+            background: #212529;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+    .admin-login-eyebrow {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.68rem;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #9e9b94;
+        margin-bottom: 0.4rem;
+    }
+
+    .admin-login-title {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 1.9rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 2.2rem;
+        line-height: 1.2;
+        letter-spacing: -0.01em;
+    }
+
+    .admin-form-group {
+        margin-bottom: 1.4rem;
+    }
+
+        .admin-form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #6b6860;
+            margin-bottom: 0.45rem;
+        }
+
+        .admin-form-group .form-control {
+            border: 1px solid #dbd9d2;
+            border-radius: 2px;
+            padding: 0.7rem 0.9rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: #1a1a1a;
+            background: #fafaf8;
+            transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+        }
+
+            .admin-form-group .form-control:focus {
+                outline: none;
+                border-color: #212529;
+                background: #ffffff;
+                box-shadow: 0 0 0 3px rgba(33, 37, 41, 0.07);
+            }
+
+            .admin-form-group .form-control::placeholder {
+                color: #c2bfb8;
+            }
+
+    .btn.btn-dark.w-100 {
+        border-radius: 2px;
+        padding: 0.8rem 1rem;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-top: 0.6rem;
+        transition: opacity 0.2s ease, transform 0.15s ease;
+        cursor: pointer;
+        border: none;
+    }
+
+        .btn.btn-dark.w-100:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+        }
+
+        .btn.btn-dark.w-100:active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+    .admin-validation {
+        display: block;
+        font-size: 0.82rem;
+        margin-top: 1rem;
+        min-height: 1.2em;
+        line-height: 1.5;
+    }
+
+    .admin-divider {
+        border: none;
+        border-top: 1px solid #eceae4;
+        margin: 1.8rem 0 1.6rem;
+    }
+</style>
+
+<div class="admin-login-wrapper">
+    <div class="admin-login-card">
+        <p class="admin-login-eyebrow">Secure Access</p>
+        <h3 class="admin-login-title">Admin Login</h3>
+
+        <form method="post">
+            <div class="admin-form-group">
+                <label asp-for="Email">Email</label>
+                <input asp-for="Email" class="form-control" placeholder="you@example.com" />
+            </div>
+
+            <hr class="admin-divider" />
+
+            <div class="admin-form-group">
+                <label asp-for="Password">Password</label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" />
+            </div>
+
+            <button class="btn btn-dark w-100">Login</button>
+            <span class="text-danger admin-validation">@Html.ValidationSummary()</span>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+@* @model RegisterDevice.Models.AdminLoginViewModel
+
 <h3>Admin Login</h3>
 
 <form method="post">
@@ -18,6 +181,4 @@
     <span class="text-danger">@Html.ValidationSummary()</span>
 </form>
 
-
-
-
+ *@
