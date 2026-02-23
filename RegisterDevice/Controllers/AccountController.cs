@@ -246,8 +246,43 @@ namespace RegisterDevice.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if(!ModelState.IsValid)
+                return View(model);
 
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("Login");
+
+            var result = await _userManager.ChangePasswordAsync(
+                user,
+                model.CurrentPassword,
+                model.NewPassword
+
+                );
+            if (result.Succeeded)
+            {
+                await _signInManager.RefreshSignInAsync(user);
+                return RedirectToAction("ChangePasswordConfirmation");
+
+            }
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+
+            return View(model);
+        }
+        public IActionResult ChangePasswordConfirmation()
+        {
+            return View();
+        }
 
     }
 }
