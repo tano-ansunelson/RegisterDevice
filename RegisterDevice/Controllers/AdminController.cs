@@ -42,20 +42,20 @@ namespace RegisterDevice.Controllers
                 RecentLostDevices = _context.LostDevicesReports
                     .Where(r => !r.IsResolved)
                     .OrderByDescending(r => r.ReportedAt)
-                    .Take(5)
+                    .Take(2)
                     .ToList(),
 
 
 
                 RecentDevies= _context.MyDevices
                      .OrderByDescending(d => d.RegisteredAt)
-                     .Take(5)
+                     .Take(2)
                      .ToList(),
 
 
                 RecentUser= _context.Users
                     .OrderByDescending(u => u.Id)
-                    .Take(5)
+                    .Take(2)
                     .ToList(),
 
 

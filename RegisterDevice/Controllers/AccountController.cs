@@ -158,8 +158,96 @@ namespace RegisterDevice.Controllers
         }
 
 
+        /* forgot password */
+        [HttpGet]
+       public IActionResult ForgotPassword()
+        {
+            return View();
+        }
 
-       
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null) {
+
+                return RedirectToAction("ForgotPasswordConfirmation");
+            
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var resetLink = Url.Action(
+                
+                "ResetPassword",
+                "Account",
+                new {token, email= model.Email},
+                Request.Scheme);
+
+
+            TempData["ResetLink"] = resetLink;
+                
+            return RedirectToAction("ForgotPasswordConfirmation");
+        }
+
+
+       public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (token == null || email == null)
+                return RedirectToAction("Login");
+
+
+            var model = new ResetPasswordViewModel
+            {
+                Token = token,
+                Email = email
+
+            };
+            return View(model);
+        }
+
+
+
+
+        [HttpPost]
+        public  async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                return RedirectToAction("Login");
+
+            var result = await _userManager.ResetPasswordAsync(
+                user,
+                model.Token,
+                model.Password);
+
+            if (result.Succeeded)
+                return RedirectToAction("Login");
+            foreach( var error in result.Errors)
+                ModelState.AddModelError("",error.Description);
+
+
+           return View(model); 
+
+        }
+
+
+
+
 
     }
 }
